@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbitstack/moonpsec/examples/01-json/json"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitstack/moonpsec",
+}
+
+// Values
+pub fn parse(StringView) -> Result[Value, @moonpsec.Refused]
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum Value {
+  Null
+  True
+  False
+  Number(String)
+  Text(String)
+  Array(Array[Value])
+  Object(Array[(String, Value)])
+}
+pub fn Value::to_string(Self) -> String
+
+// Type aliases
+
+// Traits

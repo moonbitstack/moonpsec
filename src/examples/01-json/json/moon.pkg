@@ -1,0 +1,9 @@
+// The JSON grammar the example reads documents with, in its own package so
+// that a test can import it.
+import {
+  "moonbitstack/moonpsec",
+}
+
+import {
+  "moonbitstack/moonpsec",
+} for "test"

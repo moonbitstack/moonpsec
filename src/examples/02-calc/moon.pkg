@@ -1,0 +1,7 @@
+// An infix calculator whose grammar is a table of operators rather than a
+// function per precedence level: `moon run src/examples/02-calc`.
+pkgtype(kind: "executable")
+
+import {
+  "moonbitstack/moonpsec",
+}

@@ -1,0 +1,7 @@
+// A JSON reader written with this library, and a short demonstration of it:
+// `moon run src/examples/01-json`.
+pkgtype(kind: "executable")
+
+import {
+  "moonbitstack/moonpsec/examples/01-json/json",
+}
