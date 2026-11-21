@@ -1,12 +1,208 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "moonbitstack/CHANGE-ME"
+package "moonbitstack/moonpsec"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/ref",
+}
 
 // Values
-pub fn greet(StringView) -> String
+pub let alpha_num : Parser[Char]
+
+pub let any_char : Parser[Char]
+
+pub let ascii : Parser[Char]
+
+pub let at_end : Parser[Bool]
+
+pub fn[T, O, C] between(Parser[O], Parser[C], Parser[T]) -> Parser[T]
+
+pub let blank : Parser[Char]
+
+pub fn char(Char) -> Parser[Char]
+
+pub fn char_ci(Char) -> Parser[Char]
+
+pub fn[T] choice(Array[Parser[T]]) -> Parser[T]
+
+pub let control : Parser[Char]
+
+pub let crlf : Parser[Unit]
+
+pub let digit : Parser[Char]
+
+pub let eof : Parser[Unit]
+
+pub fn[T] fail(String) -> Parser[T]
+
+pub fn[T] feeder(Parser[T], tab? : Int32) -> Feeder[T]
+
+pub let hex_digit : Parser[Char]
+
+pub let letter : Parser[Char]
+
+pub let lower : Parser[Char]
+
+pub fn[T] make_expr_parser(Parser[T], Array[Array[Operator[T]]]) -> Parser[T]
+
+pub let newline : Parser[Char]
+
+pub fn none_of(StringView) -> Parser[Char]
+
+pub let oct_digit : Parser[Char]
+
+pub fn one_of(StringView) -> Parser[Char]
+
+pub fn[T] parse(Parser[T], StringView, tab? : Int32) -> Result[(T, Position), Refused]
+
+pub let position : Parser[Position]
+
+pub let printable : Parser[Char]
+
+pub let punctuation : Parser[Char]
+
+pub fn[T] pure(T) -> Parser[T]
+
+pub fn[T] run(Parser[T], StringView, tab? : Int32) -> Result[T, Refused]
+
+pub fn[T] run_partial(Parser[T], StringView, tab? : Int32) -> Result[(T, StringView), Refused]
+
+pub fn[T] run_position(Parser[T], StringView, tab? : Int32) -> Result[(T, Position), Refused]
+
+pub fn satisfy((Char) -> Bool, want? : Item) -> Parser[Char]
+
+pub let space : Parser[Char]
+
+pub let space1 : Parser[Unit]
+
+pub let start : Position
+
+pub fn[T] stream(Parser[T], Iter[StringView], tab? : Int32) -> Result[T, Refused]
+
+pub fn string(StringView) -> Parser[String]
+
+pub fn string_ci(StringView) -> Parser[String]
+
+pub let tab : Parser[Char]
+
+pub fn take(Int32) -> Parser[String]
+
+pub let take_rest : Parser[String]
+
+pub fn take_while((Char) -> Bool) -> Parser[String]
+
+pub fn take_while1((Char) -> Bool) -> Parser[String]
+
+pub let upper : Parser[Char]
 
 // Errors
 
 // Types and methods
+pub struct Feeder[T] {
+  parser : Parser[T]
+  text : @ref.Ref[String]
+  ended : @ref.Ref[Bool]
+  tab : Int32
+}
+pub fn[T] Feeder::feed(Self[T], StringView) -> Progress[T]
+pub fn[T] Feeder::finish(Self[T]) -> Result[T, Refused]
+pub fn[T] Feeder::text(Self[T]) -> StringView
+
+#derive(Eq, @debug.Debug)
+pub(all) enum Item {
+  Token(Char)
+  Tokens(String)
+  Label(String)
+  End
+}
+pub fn Item::to_string(Self) -> String
+
+pub(all) enum Operator[T] {
+  InfixL(Parser[(T, T) -> T])
+  InfixR(Parser[(T, T) -> T])
+  InfixN(Parser[(T, T) -> T])
+  Prefix(Parser[(T) -> T])
+  Postfix(Parser[(T) -> T])
+  Ternary(Parser[Parser[(T, T, T) -> T]])
+}
+
+pub struct Parser[T] {
+  rule : (State) -> Reply[T]
+}
+pub fn[T, U] Parser::and_then(Self[T], (T) -> Self[U]) -> Self[U]
+pub fn[T] Parser::attempt(Self[T]) -> Self[T]
+pub fn[T] Parser::chain_left(Self[T], Self[(T, T) -> T]) -> Self[T]
+pub fn[T] Parser::chain_right(Self[T], Self[(T, T) -> T]) -> Self[T]
+pub fn[T] Parser::count(Self[T], Int32) -> Self[Array[T]]
+pub fn[T] Parser::eof(Self[T]) -> Self[T]
+pub fn[T] Parser::hidden(Self[T]) -> Self[T]
+pub fn[T] Parser::label(Self[T], String) -> Self[T]
+pub fn[T] Parser::look_ahead(Self[T]) -> Self[T]
+pub fn[T] Parser::many(Self[T]) -> Self[Array[T]]
+pub fn[T] Parser::many1(Self[T]) -> Self[Array[T]]
+pub fn[T, S] Parser::many_till(Self[T], Self[S]) -> Self[Array[T]]
+pub fn[T, U] Parser::map(Self[T], (T) -> U) -> Self[U]
+pub fn[T] Parser::not_followed_by(Self[T]) -> Self[Unit]
+pub fn[T] Parser::optional(Self[T]) -> Self[T?]
+pub fn[T] Parser::or(Self[T], Self[T]) -> Self[T]
+pub fn[T] Parser::or_else(Self[T], T) -> Self[T]
+pub fn[T] Parser::recover_with(Self[T], (Refused) -> Self[T]) -> Self[Repair[T]]
+pub fn[T, S] Parser::sep_by(Self[T], Self[S]) -> Self[Array[T]]
+pub fn[T, S] Parser::sep_by1(Self[T], Self[S]) -> Self[Array[T]]
+pub fn[T, S] Parser::sep_end_by(Self[T], Self[S]) -> Self[Array[T]]
+pub fn[T, S] Parser::sep_end_by1(Self[T], Self[S]) -> Self[Array[T]]
+pub fn[T, U] Parser::skip(Self[T], Self[U]) -> Self[T]
+pub fn[T] Parser::skip_many(Self[T]) -> Self[Unit]
+pub fn[T] Parser::skip_many1(Self[T]) -> Self[Unit]
+pub fn[T, U] Parser::then(Self[T], Self[U]) -> Self[U]
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Position {
+  at : Int32
+  line : Int32
+  column : Int32
+}
+pub fn Position::before(Self, Self) -> Bool
+pub fn Position::to_string(Self) -> String
+
+pub(all) enum Progress[T] {
+  Ready(T, StringView)
+  Needs(Int32)
+  Failed(Refused)
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Refused {
+  position : Position
+  got : Item?
+  want : Array[Item]
+  notes : Array[String]
+}
+pub fn Refused::merge(Self, Self) -> Self
+pub fn Refused::message(Self) -> String
+pub fn Refused::pretty(Self, StringView, tab? : Int32) -> String
+pub fn Refused::to_string(Self) -> String
+
+#derive(@debug.Debug)
+pub(all) struct Repair[T] {
+  value : T
+  refusal : Refused?
+}
+
+pub enum Reply[T] {
+  Value(T, State)
+  Problem(Refused, Bool)
+  Starved(Int32)
+}
+
+pub struct State {
+  text : StringView
+  at : Int32
+  line : Int32
+  column : Int32
+  complete : Bool
+  tab : Int32
+}
 
 // Type aliases
 

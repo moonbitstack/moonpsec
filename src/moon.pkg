@@ -1,2 +1,13 @@
-// What this package implements, and a first-hand link to the specification it
-// implements. A package without that link is not finished.
+// A parser is a value: `Parser[T]` describes how to read a `T` out of text,
+// and combinators build a grammar out of small ones without any of them
+// knowing about the others.
+//
+// A refusal carries the line and column it happened at, what was found, and
+// everything that would have been accepted there. A choice between two
+// branches merges those expectations, so the message of a failed document
+// lists every alternative at the place where the document stopped making
+// sense.
+//
+// There is no separate lexer: a grammar reads characters, and `take_while`
+// and `label` are enough to make a token layer out of them when a grammar
+// wants one.
