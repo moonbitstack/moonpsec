@@ -94,13 +94,20 @@ fn State::step(self : State) -> State {
     None => self
     Some(ch) => {
       let width = self.width()
-      let here : Position = {
-        at: self.at,
-        line: self.line,
-        column: self.column,
+      // The counters move here rather than through a `Position`, whose
+      // construction would be one allocation for every character read.
+      if ch == '\n' {
+        { ..self, at: self.at + width, line: self.line + 1, column: 1, }
+      } else if ch == '\t' {
+        let stops = if self.tab <= 0 { 1 } else { self.tab }
+        {
+          ..self,
+          at: self.at + width,
+          column: self.column + stops - (self.column - 1) % stops,
+        }
+      } else {
+        { ..self, at: self.at + width, column: self.column + 1, }
       }
-      let moved = here.advance(ch, self.tab)
-      { ..self, at: self.at + width, line: moved.line, column: moved.column, }
     }
   }
 }

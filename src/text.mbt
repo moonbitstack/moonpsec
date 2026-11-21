@@ -86,6 +86,10 @@ pub fn string_ci(text : StringView) -> Parser[String] {
 /// Reads characters while `check` holds and produces them as text. Reads
 /// nothing when the first character does not pass.
 ///
+/// The scan keeps the counters in local variables and builds one state at the
+/// end: a combinator that allocates a state per character is a combinator that
+/// turns a scan of a document into a scan of the allocator.
+///
 /// ```mbt check
 /// test {
 ///   let spaces = @moonpsec.take_while(ch => ch == ' ')
@@ -94,21 +98,44 @@ pub fn string_ci(text : StringView) -> Parser[String] {
 /// ```
 pub fn take_while(check : (Char) -> Bool) -> Parser[String] {
   Parser::new(fn(st) {
-    let mut at = st
+    let text = st.text
+    let mut at = st.at
+    let mut line = st.line
+    let mut column = st.column
     while true {
-      match at.peek() {
-        Some(ch) => if check(ch) { at = at.step() } else { break }
+      match char_at(text, at) {
+        Some(ch) =>
+          if check(ch) {
+            let width = char_width(text, at)
+            if ch == '\n' {
+              line += 1
+              column = 1
+            } else if ch == '\t' {
+              let stops = if st.tab <= 0 { 1 } else { st.tab }
+              column += stops - (column - 1) % stops
+            } else {
+              column += 1
+            }
+            at += width
+          } else {
+            break
+          }
         None => {
           // The run may continue in text that has not arrived yet, so a scan
           // that stops at a chunk boundary waits instead of guessing.
-          if !at.complete {
+          if !st.complete {
             return Starved(1)
           }
           break
         }
       }
     }
-    Value(st.text.exact_view(start=st.at, end=at.at).to_owned(), at)
+    Value(text.exact_view(start=st.at, end=at).to_owned(), {
+      ..st,
+      at,
+      line,
+      column,
+    })
   })
 }
 
@@ -116,25 +143,48 @@ pub fn take_while(check : (Char) -> Bool) -> Parser[String] {
 /// Like [`take_while`], but requires at least one character.
 pub fn take_while1(check : (Char) -> Bool) -> Parser[String] {
   Parser::new(fn(st) {
-    let mut at = st
+    let text = st.text
+    let mut at = st.at
+    let mut line = st.line
+    let mut column = st.column
     while true {
-      match at.peek() {
-        Some(ch) => if check(ch) { at = at.step() } else { break }
+      match char_at(text, at) {
+        Some(ch) =>
+          if check(ch) {
+            let width = char_width(text, at)
+            if ch == '\n' {
+              line += 1
+              column = 1
+            } else if ch == '\t' {
+              let stops = if st.tab <= 0 { 1 } else { st.tab }
+              column += stops - (column - 1) % stops
+            } else {
+              column += 1
+            }
+            at += width
+          } else {
+            break
+          }
         None => {
-          if !at.complete {
+          if !st.complete {
             return Starved(1)
           }
           break
         }
       }
     }
-    if at.at == st.at {
+    if at == st.at {
       return Problem(
         { position: st.position(), got: Some(found(st)), want: [], notes: [], },
         false,
       )
     }
-    Value(st.text.exact_view(start=st.at, end=at.at).to_owned(), at)
+    Value(text.exact_view(start=st.at, end=at).to_owned(), {
+      ..st,
+      at,
+      line,
+      column,
+    })
   })
 }
 
@@ -147,11 +197,30 @@ pub let take_rest : Parser[String] = Parser::new(fn(st) {
   if !st.complete {
     return Starved(1)
   }
-  let mut at = st
-  while at.peek() is Some(_) {
-    at = at.step()
+  let text = st.text
+  let total = text.length()
+  let mut at = st.at
+  let mut line = st.line
+  let mut column = st.column
+  while at < total {
+    match char_at(text, at) {
+      None => break
+      Some(ch) => {
+        let width = char_width(text, at)
+        if ch == '\n' {
+          line += 1
+          column = 1
+        } else if ch == '\t' {
+          let stops = if st.tab <= 0 { 1 } else { st.tab }
+          column += stops - (column - 1) % stops
+        } else {
+          column += 1
+        }
+        at += width
+      }
+    }
   }
-  Value(st.remaining().to_owned(), at)
+  Value(st.remaining().to_owned(), { ..st, at, line, column, })
 })
 
 ///|
