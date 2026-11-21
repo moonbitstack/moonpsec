@@ -22,6 +22,33 @@ pub(all) enum Progress[T] {
 }
 
 ///|
+/// Whether a value has been produced.
+pub fn[T] Progress::is_ready(self : Progress[T]) -> Bool {
+  match self {
+    Ready(_, _) => true
+    _ => false
+  }
+}
+
+///|
+/// The value, when there is one.
+pub fn[T] Progress::value(self : Progress[T]) -> T? {
+  match self {
+    Ready(value, _) => Some(value)
+    _ => None
+  }
+}
+
+///|
+/// The refusal, when the text has been refused for good.
+pub fn[T] Progress::refusal(self : Progress[T]) -> Refused? {
+  match self {
+    Failed(error) => Some(error)
+    _ => None
+  }
+}
+
+///|
 /// Feeds a parser its text a chunk at a time.
 ///
 /// The whole text is kept, and a chunk makes the parser run again from the

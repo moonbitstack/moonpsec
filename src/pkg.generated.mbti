@@ -170,6 +170,9 @@ pub(all) enum Progress[T] {
   Needs(Int32)
   Failed(Refused)
 }
+pub fn[T] Progress::is_ready(Self[T]) -> Bool
+pub fn[T] Progress::refusal(Self[T]) -> Refused?
+pub fn[T] Progress::value(Self[T]) -> T?
 
 #derive(Eq, @debug.Debug)
 pub(all) struct Refused {

@@ -88,9 +88,17 @@ pub fn[T, U] Parser::and_then(
   self : Parser[T],
   next : (T) -> Parser[U],
 ) -> Parser[U] {
-  Parser::new(st => {
+  Parser::new(fn(st) {
     match self.apply(st) {
-      Value(value, after) => next(value).apply(after)
+      Value(value, after) =>
+        match next(value).apply(after) {
+          Value(result, end) => Value(result, end)
+          // The first parser has already read something, so a refusal from the
+          // second one is not something a choice may undo.
+          Problem(error, consumed) =>
+            Problem(error, consumed || after.at > st.at)
+          Starved(need) => Starved(need)
+        }
       Problem(error, consumed) => Problem(error, consumed)
       Starved(need) => Starved(need)
     }

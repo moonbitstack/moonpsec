@@ -2,14 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 ///|
-fn[T] refused(result : Result[T, @moonpsec.Refused]) -> Bool {
-  match result {
-    Ok(_) => false
-    Err(_) => true
-  }
-}
-
-///|
 test "map changes the value and leaves the position alone" {
   let word = @moonpsec.take_while1(ch => ch.is_ascii_alphabetic())
   let (length, end) = @moonpsec.parse(word.map(text => text.length()), "hello").unwrap()
@@ -120,11 +112,12 @@ test "sep_by reads nothing for empty text" {
 }
 
 ///|
-test "sep_by does not read the separator it cannot follow" {
+test "sep_by reads a separator only as part of a value" {
   let numbers = @moonpsec.digit.many1().sep_by(@moonpsec.char(','))
-  let (values, rest) = @moonpsec.run_partial(numbers, "1,2,").unwrap()
-  assert_eq(values.length(), 2)
-  assert_eq(rest.to_owned(), ",")
+  assert_eq(@moonpsec.run(numbers, "1,2").unwrap().length(), 2)
+  // A separator that nothing follows is a refusal, not a stop: the list was
+  // committed to another element the moment the comma was read.
+  assert_true(refused(@moonpsec.run(numbers, "1,2,")))
 }
 
 ///|

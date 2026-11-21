@@ -78,7 +78,7 @@ pub fn string_ci(text : StringView) -> Parser[String] {
           }
       }
     }
-    Value(text.to_owned(), at)
+    Value(st.text.exact_view(start=st.at, end=at.at).to_owned(), at)
   })
 }
 
