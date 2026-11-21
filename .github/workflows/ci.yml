@@ -58,6 +58,16 @@ jobs:
             fi
           done
 
+      # The corpus and the comparison against the family's JSON reader live in
+      # a module of their own, which the library itself does not depend on.
+      - name: the JSON corpus
+        if: runner.os == 'Linux'
+        run: |
+          cd integration/json-suite
+          moon update
+          moon test
+          moon run bench --target native --release
+
       - name: lint (fmt is clean)
         run: |
           moon fmt && git diff --exit-code
