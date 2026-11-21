@@ -7,3 +7,7 @@ target/
 
 # Examples are read in the repository and run in CI; they do not ship.
 src/examples/
+
+# The integration module reads the corpus and the family's JSON library; it is
+# not part of what a user installs.
+integration/

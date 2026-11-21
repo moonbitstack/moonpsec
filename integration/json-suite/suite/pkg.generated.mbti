@@ -1,0 +1,22 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbitstack/moonpsec-json-suite/suite"
+
+// Values
+pub fn run() -> Summary
+
+// Errors
+
+// Types and methods
+pub(all) struct Summary {
+  cases : Int32
+  accepted : Int32
+  refused : Int32
+  wrong : Array[String]
+  disputed : Array[String]
+  unequal : Array[String]
+}
+pub fn Summary::to_string(Self) -> String
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,11 @@
+// The JSON reader of the example package, read against the JSONTestSuite
+// corpus and against the family's own JSON library, whose verdict and value
+// have to agree.
+import {
+  "moonbitstack/moonpsec/examples/01-json/json",
+  "moonbitstack/moonjson",
+  "moonbitlang/core/json" @corejson,
+  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/encoding/hex",
+}

@@ -1,0 +1,10 @@
+// Times the JSON reader of the example package against the family's JSON
+// library on documents of the same shape.
+pkgtype(kind: "executable")
+
+import {
+  "moonbitstack/moonpsec",
+  "moonbitstack/moonpsec/examples/01-json/json",
+  "moonbitstack/moonjson",
+  "moonbitlang/core/bench" @clock,
+}
