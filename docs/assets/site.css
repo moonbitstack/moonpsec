@@ -102,6 +102,38 @@ body {
 
 ::selection { background: var(--red-soft); color: var(--ink); }
 
+/* ---------- what a pointer may select ----------
+   The page is a plate: the rail, the rules, the diagrams, the tape and its
+   readouts are furniture, and a drag that starts on furniture is a slip, not a
+   copy. Prose and code are text and stay selectable. `body` carries the
+   furniture default, so anything added later is furniture until it is named. */
+
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+h1, h2, h3, h4, p, li, td, th, blockquote, dl, dt, dd, figcaption,
+pre, code, kbd, samp, .output, .note, .field, input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Instruments, including the ones that contain a paragraph or a list of their
+   own: a bench that lets a drag select its own numbers is a bench that fights
+   the pointer. The touch callout goes with them, so a long press on a control
+   does not open the copy sheet for a word the reader did not mean to touch. */
+.rail, .rail *, .reg, .masthead, .masthead *, nav, nav *,
+.toc, .toc *, footer.colophon, footer.colophon *,
+section.band > .side, .step > .n, .label,
+.tape, .tape *, .scrub, .readout, .readout *, .samples, .samples *,
+figure.plate, figure.plate *, .tree, .tree *,
+.bench > header, .bench > header *, .chips, .chips *, [data-state] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 a { color: inherit; text-decoration: none; }
 a:focus-visible, button:focus-visible, input:focus-visible {
   outline: 1px solid var(--red);
