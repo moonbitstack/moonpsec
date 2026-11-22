@@ -1,0 +1,14 @@
+// The glue between the documentation site and the library: three functions the
+// pages call, each taking and returning text so that nothing but strings
+// crosses the boundary. Built to `docs/engine/moonpsec.js` by the docs
+// workflow, never shipped with the module.
+import {
+  "moonbitstack/moonpsec",
+  "moonbitstack/moonpsec/examples/01-json/json",
+}
+
+options(
+  link: {
+    "js": { "exports": [ "verdict", "cut", "expression" ], "format": "esm" },
+  },
+)

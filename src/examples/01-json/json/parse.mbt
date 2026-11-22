@@ -13,6 +13,13 @@
 let max_depth : Int32 = 128
 
 ///|
+/// The parser this package reads documents with, for a caller that wants to
+/// feed it text in pieces instead of in one go.
+pub fn document() -> @moonpsec.Parser[Value] {
+  document_parser
+}
+
+///|
 /// Reads one JSON document and refuses anything after it.
 ///
 /// ```mbt check
@@ -22,12 +29,12 @@ let max_depth : Int32 = 128
 /// }
 /// ```
 pub fn parse(text : StringView) -> Result[Value, @moonpsec.Refused] {
-  @moonpsec.run(document, text)
+  @moonpsec.run(document_parser, text)
 }
 
 ///|
 /// The whole document: a value with whitespace around it, and then the end.
-let document : @moonpsec.Parser[Value] = byte_order_mark
+let document_parser : @moonpsec.Parser[Value] = byte_order_mark
   .then(whitespace)
   .then(value_at(max_depth))
   .skip(whitespace)

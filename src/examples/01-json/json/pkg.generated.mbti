@@ -7,6 +7,8 @@ import {
 }
 
 // Values
+pub fn document() -> @moonpsec.Parser[Value]
+
 pub fn parse(StringView) -> Result[Value, @moonpsec.Refused]
 
 // Errors
