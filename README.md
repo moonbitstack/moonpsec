@@ -11,10 +11,10 @@ test {
 }
 ```
 
-[mooncakes](https://mooncakes.io/docs/moonbitstack/moonpsec) ·
-[guide](#guide) · [interface](#interface) · [errors](#errors) ·
-[operators](#operator-tables) · [streaming](#text-that-arrives-in-pieces) ·
-[examples](#examples)
+[site](https://moonbitstack.github.io/moonpsec/) ·
+[guide](https://moonbitstack.github.io/moonpsec/guide.html) ·
+[reference](https://moonbitstack.github.io/moonpsec/api.html) ·
+[mooncakes](https://mooncakes.io/docs/moonbitstack/moonpsec)
 
 ## Add it
 

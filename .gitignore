@@ -3,3 +3,6 @@
 !.moonignore
 _*
 target/
+
+# Built by the docs workflow from src/examples/browser; never shipped.
+docs/engine/

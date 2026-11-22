@@ -1,0 +1,66 @@
+name: Docs
+
+# The site is `docs/`, and the reader it runs is this library compiled to
+# JavaScript by this workflow. Nothing built lands in the repository: the engine
+# is written to `docs/engine/`, which `.gitignore` keeps out, and the reference
+# page is regenerated and compared, so a page that no longer matches the code
+# stops the deploy instead of shipping a name the library does not have.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: install moonbit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: the reference page is up to date
+        run: |
+          moon update
+          moon info --target all
+          python3 scripts/gen_api.py
+          git -c core.autocrlf=false diff --exit-code
+
+      - name: build the reader the pages run
+        run: |
+          moon build --target js --release src/examples/browser
+          mkdir -p docs/engine
+          cp _build/js/release/build/moonbitstack/moonpsec/examples/browser/browser.js docs/engine/moonpsec.js
+
+      - name: configure pages
+        uses: actions/configure-pages@v6
+        with:
+          enablement: true
+
+      - name: upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-26.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

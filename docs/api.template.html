@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — moonpsec</title>
+<meta name="description" content="Every public name of moonpsec: the parsers, the combinators, the ways to run one, and the refusal that comes back.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>
+  document.documentElement.dataset.theme =
+    sessionStorage.getItem("moonpsec-theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+</script>
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg class="mark" viewBox="0 0 24 24">
+    <line x1="4" y1="12" x2="20" y2="12"></line>
+    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <circle cx="12" cy="12" r="7.5"></circle>
+  </svg>
+  <div class="spine">plate 03 — reference</div>
+  <div class="tick"></div>
+</div>
+<div class="reg tl" aria-hidden="true"></div>
+<div class="reg tr" aria-hidden="true"></div>
+<div class="reg bl" aria-hidden="true"></div>
+
+<main class="sheet">
+
+  <header class="masthead">
+    <div class="name">moonpsec<span>reference</span></div>
+    <nav class="pages" aria-label="Pages">
+      <a href="index.html"><span class="n">01</span>plate</a>
+      <a href="guide.html"><span class="n">02</span>guide</a>
+      <a href="api.html" aria-current="page"><span class="n">03</span>reference</a>
+      <a href="demo.html"><span class="n">04</span>play</a>
+    </nav>
+    <div class="tools">
+      <button class="ghost" data-theme-toggle aria-label="Switch theme">light</button>
+      <a class="ghost" href="https://github.com/moonbitstack/moonpsec">github</a>
+    </div>
+  </header>
+
+  <div class="ref">
+    <aside class="toc scroll" aria-label="Contents">
+      <span class="label" style="display:block;margin-bottom:10px">contents</span>
+      <ul>
+        <!-- nav -->
+      </ul>
+    </aside>
+    <div class="ref-body">
+      <!-- body -->
+      <footer class="colophon">
+        <span>moonpsec · Apache-2.0 · a library of moonbitstack</span>
+        <span>
+          <a href="https://github.com/moonbitstack/moonpsec">source</a> ·
+          <a href="https://mooncakes.io/docs/moonbitstack/moonpsec">mooncakes</a> ·
+          <a href="index.html">plate</a> ·
+          <a href="guide.html">guide</a>
+        </span>
+      </footer>
+    </div>
+  </div>
+
+</main>
+
+<script src="assets/rule.js"></script>
+<script src="assets/theme.js"></script>
+</body>
+</html>

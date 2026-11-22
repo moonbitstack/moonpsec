@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play — moonpsec</title>
+<meta name="description" content="Two benches that run this library compiled from its sources: cut a document anywhere and read the verdict, or draw the tree an operator table builds.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>
+  document.documentElement.dataset.theme =
+    sessionStorage.getItem("moonpsec-theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+</script>
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg class="mark" viewBox="0 0 24 24">
+    <line x1="4" y1="12" x2="20" y2="12"></line>
+    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <circle cx="12" cy="12" r="7.5"></circle>
+  </svg>
+  <div class="spine">plate 04 — play</div>
+  <div class="tick"></div>
+</div>
+<div class="reg tl" aria-hidden="true"></div>
+<div class="reg tr" aria-hidden="true"></div>
+<div class="reg bl" aria-hidden="true"></div>
+
+<main class="sheet">
+
+  <header class="masthead">
+    <div class="name">moonpsec<span>play</span></div>
+    <nav class="pages" aria-label="Pages">
+      <a href="index.html"><span class="n">01</span>plate</a>
+      <a href="guide.html"><span class="n">02</span>guide</a>
+      <a href="api.html"><span class="n">03</span>reference</a>
+      <a href="demo.html" aria-current="page"><span class="n">04</span>play</a>
+    </nav>
+    <div class="tools">
+      <button class="ghost" data-theme-toggle aria-label="Switch theme">light</button>
+      <a class="ghost" href="https://github.com/moonbitstack/moonpsec">github</a>
+    </div>
+  </header>
+
+  <section style="padding:56px 0 34px;border-bottom:1px solid var(--rule-strong)">
+    <span class="label">two benches, nothing faked</span>
+    <h1 style="font-family:var(--serif);font-size:clamp(44px,7vw,88px);line-height:0.92;letter-spacing:-0.03em;margin:20px 0 18px">
+      Put a document<br>on the table.
+    </h1>
+    <p class="lede">
+      Both benches call the library compiled from these sources to JavaScript and
+      loaded beside this page. Nothing here is a recording.
+    </p>
+  </section>
+
+  <section style="padding:44px 0 10px" data-doc-bench data-tape-root>
+    <div class="bench">
+      <header>
+        <span class="label">bench a — cut a document</span>
+        <span class="label" data-count></span>
+      </header>
+
+      <label class="label" for="document" style="display:block;margin-bottom:8px">the document</label>
+      <input class="field" id="document" data-text-input data-document spellcheck="false"
+             value='{"name": "moonpsec", "tags": ["parser", "moonbit"], "depth": 128}'>
+
+      <div class="tape-wrap">
+        <div class="tape">
+          <div class="line" data-line><span data-read></span><span class="bad" data-bad hidden></span><span class="unread" data-rest></span><span class="caret" data-caret hidden></span></div>
+          <input class="scrub" type="range" min="0" max="1" step="1" value="0" data-scrub aria-label="Cut the document at a place">
+        </div>
+
+        <div class="readout" style="margin-top:14px">
+          <div><span class="k">position</span><span class="v" data-pos>—:—</span></div>
+          <div><span class="k">found</span><span class="v" data-got>—</span></div>
+          <div><span class="k">would accept</span><span class="v" data-want>—</span></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:10px;flex-wrap:wrap">
+          <span class="small" data-state>waiting for the rest of the text</span>
+          <button type="button" class="ghost" data-play>read it</button>
+        </div>
+      </div>
+
+      <p class="small" style="margin:18px 0 0;max-width:74ch">
+        Drag the rule to cut the document anywhere. At each cut the reader says
+        whether it is waiting for more, and what it would say if the text ended
+        there — the two answers a parser has to give when its text arrives in
+        pieces. Delete a bracket and watch the expectation change.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding:24px 0 10px" data-tree-bench>
+    <div class="bench">
+      <header>
+        <span class="label">bench b — draw the table's tree</span>
+        <span class="label" data-tree-verdict>—</span>
+      </header>
+
+      <label class="label" for="expression" style="display:block;margin-bottom:8px">the expression</label>
+      <input class="field" id="expression" data-expression spellcheck="false" value="1 + 2 * 3 ^ 2">
+
+      <div class="chips">
+        <button type="button" data-sample-expr="1+2*3">1+2*3</button>
+        <button type="button" data-sample-expr="2^3^2">2^3^2</button>
+        <button type="button" data-sample-expr="8-2-3">8-2-3</button>
+        <button type="button" data-sample-expr="-4+10">-4+10</button>
+        <button type="button" data-sample-expr="(1+2)*3">(1+2)*3</button>
+        <button type="button" data-sample-expr="10/4">10/4</button>
+        <button type="button" data-sample-expr="1++2">1++2</button>
+      </div>
+
+      <div class="tree" data-tree style="margin-top:26px"></div>
+
+      <p class="small" style="margin:20px 0 0;max-width:74ch">
+        The tree is what <code>make_expr_parser</code> built from the table:
+        precedence and associativity are visible in its shape, not asserted
+        afterwards. A boxed operator is a node, the lines under it are its
+        operands, and the left-to-right order is the order the text was read in.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding:30px 0 60px">
+    <div class="note" style="max-width:78ch">
+      <b>The glue is twelve lines of MoonBit.</b> Each bench calls one function:
+      <code>cut(text, at)</code> and <code>expression(text)</code>, both taking a
+      string and returning a string. Everything the page draws is computed by the
+      library at the moment you type — the refusals, the positions, the
+      expectations, and the tree.
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span>moonpsec · Apache-2.0 · a library of moonbitstack</span>
+    <span>
+      <a href="https://github.com/moonbitstack/moonpsec">source</a> ·
+      <a href="https://mooncakes.io/docs/moonbitstack/moonpsec">mooncakes</a> ·
+      <a href="index.html">plate</a> ·
+      <a href="guide.html">guide</a>
+    </span>
+  </footer>
+
+</main>
+
+<script src="assets/rule.js"></script>
+<script src="assets/theme.js"></script>
+<script type="module" src="assets/tape.js"></script>
+<script type="module" src="assets/play.js"></script>
+</body>
+</html>

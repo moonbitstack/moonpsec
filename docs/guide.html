@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — moonpsec</title>
+<meta name="description" content="From one parser to a grammar that reads a document: reading, composing, repeating, refusing, backtracking, operators and text that arrives in pieces.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>
+  document.documentElement.dataset.theme =
+    sessionStorage.getItem("moonpsec-theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+</script>
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg class="mark" viewBox="0 0 24 24">
+    <line x1="4" y1="12" x2="20" y2="12"></line>
+    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <circle cx="12" cy="12" r="7.5"></circle>
+  </svg>
+  <div class="spine">plate 02 — guide</div>
+  <div class="tick"></div>
+</div>
+<div class="reg tl" aria-hidden="true"></div>
+<div class="reg tr" aria-hidden="true"></div>
+<div class="reg bl" aria-hidden="true"></div>
+
+<main class="sheet">
+
+  <header class="masthead">
+    <div class="name">moonpsec<span>guide</span></div>
+    <nav class="pages" aria-label="Pages">
+      <a href="index.html"><span class="n">01</span>plate</a>
+      <a href="guide.html" aria-current="page"><span class="n">02</span>guide</a>
+      <a href="api.html"><span class="n">03</span>reference</a>
+      <a href="demo.html"><span class="n">04</span>play</a>
+    </nav>
+    <div class="tools">
+      <button class="ghost" data-theme-toggle aria-label="Switch theme">light</button>
+      <a class="ghost" href="https://github.com/moonbitstack/moonpsec">github</a>
+    </div>
+  </header>
+
+  <section style="padding:56px 0 10px;border-bottom:1px solid var(--rule-strong)">
+    <span class="label">nine steps, one grammar</span>
+    <h1 style="font-family:var(--serif);font-size:clamp(44px,7vw,88px);line-height:0.92;letter-spacing:-0.03em;margin:20px 0 18px">
+      From a character<br>to a document.
+    </h1>
+    <p class="lede">
+      Every step is code that compiles and runs. Outputs are the real ones; nothing
+      here is illustrative.
+    </p>
+  </section>
+
+  <div class="steps">
+
+    <article class="step">
+      <div class="n">01</div>
+      <div>
+        <h3>Add the package</h3>
+        <p>One module, no dependencies. It builds on all four backends.</p>
+        <pre class="specimen" data-lang="mbt"><code>// moon.mod
+import {
+  "moonbitstack/moonpsec@0.1.0",
+}</code></pre>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">02</div>
+      <div>
+        <h3>One parser, one value</h3>
+        <p>
+          A parser reads characters and produces a value. <code>take_while1</code>
+          reads a run that may not be empty; <code>run</code> hands the text to it
+          and asks for all of it.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let letters = @moonpsec.take_while1(ch =&gt; ch.is_ascii_alphabetic())
+let answer = @moonpsec.run(letters, "moonbit")</code></pre>
+        <div class="output">answer = Ok("moonbit")</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">03</div>
+      <div>
+        <h3>Compose</h3>
+        <p>
+          <code>then</code> runs two parsers in order and keeps the second value;
+          <code>skip</code> keeps the first. Together they read the parts of a
+          sentence a grammar does not want in its result.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let keyword = @moonpsec.string("let")
+let binding = keyword.then(@moonpsec.space1.then(letters)).skip(@moonpsec.char(';'))
+let bound = @moonpsec.run(binding, "let answer;")</code></pre>
+        <div class="output">bound = Ok("answer")</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">04</div>
+      <div>
+        <h3>Repeat, with separators</h3>
+        <p>
+          <code>sep_by</code> reads a list; <code>sep_end_by</code> is the one that
+          also reads a separator after the last item. A separator with nothing
+          after it is a refusal, because the list had already committed to another
+          item the moment the separator was read.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let item = @moonpsec.take_while1(ch =&gt; ch != ',')
+let list = item.sep_by(@moonpsec.char(','))
+let items = @moonpsec.run(list, "a,b,c")</code></pre>
+        <div class="output">items = Ok(["a", "b", "c"])</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">05</div>
+      <div>
+        <h3>Read the refusal</h3>
+        <p>
+          A refusal carries the position, the thing that was found, everything
+          that would have been accepted, and any note the grammar attached.
+          <code>to_string</code> is one line for a log; <code>pretty</code> is the
+          form a person needs.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let refusal = @moonpsec.run(@moonpsec.string("let"), "lex").unwrap_err()
+let place = refusal.position.to_string()
+let said = refusal.to_string()
+let drawn = refusal.pretty("lex")</code></pre>
+        <div class="output">place = "1:3"
+said  = 1:3: unexpected 'x'; expecting "let"
+drawn =
+1:3:
+  |
+1 | lex
+  |   ^
+unexpected 'x'
+expecting "let"</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">06</div>
+      <div>
+        <h3>Name what was wanted, then get past it</h3>
+        <p>
+          <code>label</code> puts a reader's word where a character class would
+          go. <code>recover_with</code> runs a second parser at the place of the
+          refusal and keeps the refusal beside the value, so a caller can collect
+          several problems and read on.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let integer = @moonpsec.take_while1(ch =&gt; ch.is_ascii_digit()).label("integer")
+let forgiving = integer.recover_with(_ =&gt; @moonpsec.pure("0"))
+let repaired = @moonpsec.run(forgiving, "").unwrap()</code></pre>
+        <div class="output">repaired.value   = "0"
+repaired.refusal = Some(1:1: unexpected end of input; expecting integer)</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">07</div>
+      <div>
+        <h3>Know when a branch has committed</h3>
+        <p>
+          A choice tries its other branch only while nothing has been read.
+          <code>attempt</code> puts the text back and lets both be tried — at the
+          cost of retrying work the first branch had already done.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let straight = @moonpsec.string("ab").or(@moonpsec.string("ac"))
+let either = @moonpsec.string("ab").attempt().or(@moonpsec.string("ac"))
+let first = @moonpsec.run(straight, "ac")
+let second = @moonpsec.run(either, "ac")</code></pre>
+        <div class="output">first  = Err(1:2: unexpected 'c'; expecting "ab")
+second = Ok("ac")</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">08</div>
+      <div>
+        <h3>Take precedence from a table</h3>
+        <p>
+          <code>make_expr_parser</code> turns a term parser and a table of
+          operators into an expression parser. The table runs from the tightest
+          binding to the loosest; mixed associativity at one level is allowed.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let digit = @moonpsec.char('4').map(_ =&gt; 4)
+let times = @moonpsec.char('*').map(_ =&gt; (a : Int, b : Int) =&gt; a * b)
+let plus = @moonpsec.char('+').map(_ =&gt; (a : Int, b : Int) =&gt; a + b)
+let levels : Array[Array[@moonpsec.Operator[Int]]] = [
+  [@moonpsec.Operator::InfixL(times)],
+  [@moonpsec.Operator::InfixL(plus)],
+]
+let sums = @moonpsec.make_expr_parser(digit, levels)
+let worked = @moonpsec.run(sums, "4+4*4")</code></pre>
+        <div class="output">worked = Ok(20)</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">09</div>
+      <div>
+        <h3>Feed text that is still arriving</h3>
+        <p>
+          A <code>Feeder</code> takes the text a chunk at a time and answers
+          <code>Needs</code> while the text ends in the middle of something. A
+          grammar without <code>eof</code> answers as soon as it has a value, and
+          the rest of the chunk comes back with it.
+        </p>
+        <pre class="specimen" data-lang="mbt"><code>let hello = @moonpsec.feeder(@moonpsec.string("hello").eof())
+let first_chunk = hello.feed("he")
+let second_chunk = hello.feed("llo")
+let value = hello.finish()</code></pre>
+        <div class="output">first_chunk  = Needs(1)
+second_chunk = Needs(1)
+value        = Ok("hello")</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="n">—</div>
+      <div>
+        <h3>Where next</h3>
+        <p>
+          The <a href="api.html" style="border-bottom:1px solid var(--rule-strong)">reference</a>
+          lists every name with its signature. The
+          <a href="demo.html" style="border-bottom:1px solid var(--rule-strong)">play page</a>
+          runs the reader on whatever you type, and draws the tree the operator
+          table builds.
+        </p>
+        <p>
+          Two grammars in the repository are worth reading end to end: a JSON
+          reader for RFC 8259 (<code>src/examples/01-json</code>) and a calculator
+          whose precedence is a table (<code>src/examples/02-calc</code>).
+        </p>
+      </div>
+    </article>
+
+  </div>
+
+  <footer class="colophon">
+    <span>moonpsec · Apache-2.0 · a library of moonbitstack</span>
+    <span>
+      <a href="https://github.com/moonbitstack/moonpsec">source</a> ·
+      <a href="https://mooncakes.io/docs/moonbitstack/moonpsec">mooncakes</a> ·
+      <a href="index.html">plate</a> ·
+      <a href="api.html">reference</a>
+    </span>
+  </footer>
+
+</main>
+
+<script src="assets/rule.js"></script>
+<script src="assets/theme.js"></script>
+</body>
+</html>
