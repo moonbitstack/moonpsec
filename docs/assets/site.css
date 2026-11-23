@@ -73,9 +73,11 @@ body {
 
 /* Every scroller inside a page, not just the ones marked: a code block that
    falls back to the browser's bar is the one thing a reader notices. */
-.scroll, .tape .line, pre.specimen, pre.sig, pre.code, .ref-body {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+@supports not selector(::-webkit-scrollbar) {
+  .scroll, .tape .line, pre.specimen, pre.sig, pre.code, .ref-body {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+  }
 }
 @supports selector(::-webkit-scrollbar) {
   .scroll::-webkit-scrollbar, .tape .line::-webkit-scrollbar,
@@ -141,7 +143,8 @@ pre, code, kbd, samp, .output, .note, .field, input, textarea {
 section.band > .side, .step > .n, .label,
 .tape, .tape *, .scrub, .readout, .readout *, .samples, .samples *,
 figure.plate, figure.plate *, .tree, .tree *,
-.bench > header, .bench > header *, .chips, .chips *, [data-state] {
+.bench > header, .bench > header *, .chips, .chips *, [data-state],
+.display, .verdict, .message-cap, .onward, .onward *, .specimen-head {
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
@@ -555,23 +558,6 @@ footer.colophon a:hover { border-bottom-color: var(--red); color: var(--ink); }
   .caret { transition: none; }
 }
 
-/* the name carries the library's subject: a caret standing in the word */
-.caret-glyph {
-  display: inline-block;
-  width: 3px;
-  height: 0.58em;
-  margin: 0 0.05em 0 0.03em;
-  background: var(--red);
-  vertical-align: baseline;
-  transform: translateY(0.02em);
-  animation: caret-blink 1.5s steps(1, end) infinite;
-}
-
-@keyframes caret-blink {
-  0%, 62% { opacity: 1; }
-  63%, 100% { opacity: 0; }
-}
-
 .tape .line { position: relative; }
 
 .caret {
@@ -739,6 +725,7 @@ pre.code {
 
 @media (width <= 940px) {
   .ref { grid-template-columns: minmax(0, 1fr); }
+  ul.variants li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .toc { position: static; max-height: none; margin-bottom: 20px; border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
 }
 
@@ -784,97 +771,97 @@ pre.code {
   overflow-x: auto;
 }
 
-/* ---------- the document, read ---------- */
+/* ---------- the specimen: documents, read on this page ---------- */
 
-.manuscript-block {
-  margin-top: 56px;
-  padding: 16px 0 14px;
+.specimen-block {
+  margin-top: 54px;
+  padding: 16px 0 18px;
   border-top: 1px solid var(--rule-strong);
   border-bottom: 1px solid var(--rule);
 }
 
-.m-head {
+.specimen-head {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
-.m-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 216px;
-  gap: 0 40px;
-  align-items: start;
-}
-
-.m-text { position: relative; min-width: 0; }
-
-.manuscript {
-  margin: 0;
-  max-width: 62ch;
+table.specimen-rows {
+  width: 100%;
+  border-collapse: collapse;
   font-family: var(--mono);
-  font-size: clamp(15px, 1.5vw, 19px);
-  line-height: 1.95;
-  letter-spacing: 0.005em;
+  font-size: clamp(12px, 1.08vw, 13.5px);
+  line-height: 1.6;
+}
+
+table.specimen-rows th {
+  padding: 0 0 8px;
+  text-align: left;
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border-bottom: 1px solid var(--rule);
+}
+
+table.specimen-rows th:last-child { text-align: right; }
+
+table.specimen-rows td {
+  padding: 11px 0;
+  border-bottom: 1px dotted var(--rule);
+  vertical-align: baseline;
+}
+
+table.specimen-rows tr:last-child td { border-bottom: 0; }
+
+table.specimen-rows td.input {
+  white-space: pre;
   color: var(--ink);
-  outline: none;
-  cursor: text;
+  overflow-wrap: normal;
 }
 
-.manuscript .unread { color: var(--faint); }
-
-/* The character the reader cannot take. */
-.manuscript .stop {
-  background: var(--red-soft);
-  box-shadow: 0 0 0 1px var(--red);
-  color: var(--ink);
+table.specimen-rows td.input code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
 }
 
-.mcaret {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1.6em;
-  background: var(--red);
-  pointer-events: none;
-  transition: transform 70ms linear, height 70ms linear;
+table.specimen-rows td.verdict {
+  text-align: right;
+  color: var(--faint);
 }
 
-.mcaret::before,
-.mcaret::after {
-  content: "";
-  position: absolute;
-  left: -2px;
-  width: 5px;
-  height: 1px;
-  background: var(--red);
-}
-.mcaret::before { top: 0; }
-.mcaret::after { bottom: 0; }
+table.specimen-rows td.verdict.accepted { color: var(--ink); }
+table.specimen-rows td.verdict.refused { color: var(--red); }
 
-.m-note {
-  border-left: 1px solid var(--rule);
-  padding: 2px 0 0 18px;
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.7;
+table.specimen-rows td.verdict .where {
+  color: color-mix(in srgb, var(--red) 70%, var(--ink));
 }
 
-.m-line { margin: 0; }
-.m-line.sub { margin-top: 6px; font-size: 11.5px; line-height: 1.6; color: var(--faint); }
-.m-sep { color: var(--faint); margin: 0 6px; }
+table.specimen-rows td.verdict.accepted .where { color: var(--faint); }
 
-.m-note [data-state].is-refused { color: var(--red); }
-.m-note .m-line.is-refused { color: var(--red); }
-.m-note .ghost { margin-top: 16px; }
+table.specimen-rows code { background: none; }
 
-.m-foot {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin: 22px 0 0;
+@media (width <= 760px) {
+  .specimen-head { flex-direction: column; gap: 6px; }
+  table.specimen-rows thead { display: none; }
+  table.specimen-rows td.input {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    display: block;
+    padding-bottom: 2px;
+    border-bottom: 0;
+  }
+  table.specimen-rows td.verdict {
+    display: block;
+    text-align: left;
+    padding-top: 0;
+  }
+  table.specimen-rows th:last-child { text-align: left; }
 }
 
 /* ---------- sections: prose beside its specimen ---------- */

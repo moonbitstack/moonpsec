@@ -11,9 +11,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>
-  document.documentElement.dataset.theme =
-    sessionStorage.getItem("moonpsec-theme") ||
-    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  // A reload forgets the choice and goes back to following the system; moving
+  // to another page in the same visit keeps it. sessionStorage alone cannot
+  // tell those two apart, so the navigation type does.
+  (() => {
+    const chosen = sessionStorage.getItem("moonpsec-theme");
+    const reloaded = performance.getEntriesByType("navigation")[0]?.type === "reload";
+    if (reloaded) sessionStorage.removeItem("moonpsec-theme");
+    document.documentElement.dataset.theme =
+      (reloaded ? null : chosen) ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  })();
 </script>
 </head>
 <body>
@@ -49,14 +57,15 @@
 
   <section class="hero">
     <div class="hero-meta">
-      <span class="label">a grammar kit for MoonBit</span>
-      <span class="label">one package · no dependencies</span>
+      <span class="label">a parser combinator library</span>
+      <span class="label">moonbit · apache-2.0 · no dependencies</span>
     </div>
-    <h1 class="display">moon<span class="caret-glyph" aria-hidden="true"></span>psec</h1>
+    <h1 class="display">moon parser</h1>
     <div class="hero-body">
       <p class="lede">
-        A parser is a value. Give it text, and it answers with a value — or with
-        the place it stopped, and every character it would have taken there.
+        moonpsec reads text with a grammar written in MoonBit. Give it a
+        document, and it answers with the value — or with the place it stopped,
+        and everything it would have taken there.
       </p>
       <div class="install">
         <span class="label">install</span>
@@ -65,31 +74,23 @@
     </div>
   </section>
 
-  <section class="manuscript-block" aria-labelledby="document-label">
-    <div class="m-head">
-      <span class="label" id="document-label">the document</span>
-      <span class="label">read by examples/01-json</span>
+  <section class="specimen-block" aria-labelledby="specimen-label">
+    <div class="specimen-head">
+      <span class="label" id="specimen-label">four documents</span>
+      <span class="label">read on this page by the library, compiled to javascript</span>
     </div>
-
-    <div class="m-body">
-      <div class="m-text">
-        <p class="manuscript" data-manuscript tabindex="0" aria-describedby="document-label"><span data-read></span><span data-head></span><span class="unread" data-unread>{"name": "moonpsec", "version": "0.1.0", "tags": ["parser", "combinator", "moonbit"], "license": "Apache-2.0",}</span></p>
-        <i class="mcaret" data-caret aria-hidden="true"></i>
-      </div>
-
-      <aside class="m-note" aria-hidden="true">
-        <p class="m-line"><span data-pos>1:1</span><span class="m-sep">·</span><span data-state>reading</span></p>
-        <p class="m-line sub" data-detail>the text has not been read yet</p>
-        <button class="ghost" type="button" data-hold>hold</button>
-      </aside>
-    </div>
-
-    <p class="m-foot">
-      <span class="small">click the document to place the caret</span>
-      <span class="small">the reader on this page is this library, compiled for the browser</span>
-    </p>
-
-    <p class="sr-only" data-sr>The document is read from the left. Every character up to the trailing comma is accepted; at the closing brace the reader refuses, because a comma cannot be followed by the end of an object.</p>
+    <table class="specimen-rows">
+      <thead>
+        <tr><th scope="col">document</th><th scope="col">what the reader said</th></tr>
+      </thead>
+      <tbody>
+        <tr data-doc><td class="input"><code>[1, 2, 3]</code></td><td class="verdict"><span class="word">—</span></td></tr>
+        <tr data-doc><td class="input"><code>{"name": "moonpsec"}</code></td><td class="verdict"><span class="word">—</span></td></tr>
+        <tr data-doc><td class="input"><code>{"name": "moonpsec",}</code></td><td class="verdict"><span class="word">—</span></td></tr>
+        <tr data-doc><td class="input"><code>{name: "moonpsec"}</code></td><td class="verdict"><span class="word">—</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin:12px 0 0">A refusal is not a failure to say yes; it is the position, the character found there, and the set of things that would have done instead.</p>
   </section>
 
   <section class="band" id="position">
@@ -200,9 +201,9 @@ let accepted = @moonpsec.run(ab.attempt().or(ac), "ac")</code></pre>
             parser, and nothing that was settled is read twice.
           </p>
           <p>
-            The document at the top of this page is read that way: held short at
-            every character, and asked what it would say if the text ended
-            there.
+            A tree that arrives over a socket is the same parser with a
+            different source of characters: the grammar does not know how its
+            text was delivered.
           </p>
         </div>
         <figure>
@@ -257,6 +258,6 @@ let done = feeder.finish()</code></pre>
 
 <script src="assets/rule.js"></script>
 <script src="assets/theme.js"></script>
-<script type="module" src="assets/manuscript.js"></script>
+<script type="module" src="assets/specimen.js"></script>
 </body>
 </html>
