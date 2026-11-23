@@ -102,6 +102,19 @@ body {
 
 ::selection { background: var(--red-soft); color: var(--ink); }
 
+/* Said for a screen reader, and for nothing else. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- what a pointer may select ----------
    The page is a plate: the rail, the rules, the diagrams, the tape and its
    readouts are furniture, and a drag that starts on furniture is a slip, not a
@@ -298,7 +311,7 @@ section.band:last-of-type { border-bottom: 0; }
 
 section.band > .side {
   font-size: 10px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--faint);
   padding-top: 8px;
@@ -524,6 +537,12 @@ footer.colophon a:hover { border-bottom-color: var(--red); color: var(--ink); }
   nav.pages { gap: 14px; }
 }
 
+@media (width <= 620px) {
+  .masthead { gap: 10px 16px; }
+  nav.pages { gap: 12px; }
+  nav.pages a { letter-spacing: 0.1em; }
+}
+
 @media (width <= 520px) {
   :root { --rail: 0px; --gutter: 18px; }
   .rail { display: none; }
@@ -730,4 +749,248 @@ pre.code {
 
 @media (width <= 860px) {
   .split, .split.wide, .split.even { grid-template-columns: minmax(0, 1fr); gap: 20px 0; }
+}
+
+/* ---------- the plate's own cover: a hero, a document, four sections ---------- */
+
+.hero { padding: 64px 0 0; }
+
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 10px;
+}
+
+.hero .display { padding: 26px 0 10px; }
+
+.hero-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 0 48px;
+  align-items: end;
+  padding: 12px 0 0;
+}
+
+.install { padding-left: 20px; border-left: 1px solid var(--rule); }
+.install pre {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  overflow-x: auto;
+}
+
+/* ---------- the document, read ---------- */
+
+.manuscript-block {
+  margin-top: 56px;
+  padding: 16px 0 14px;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+}
+
+.m-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.m-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 216px;
+  gap: 0 40px;
+  align-items: start;
+}
+
+.m-text { position: relative; min-width: 0; }
+
+.manuscript {
+  margin: 0;
+  max-width: 62ch;
+  font-family: var(--mono);
+  font-size: clamp(15px, 1.5vw, 19px);
+  line-height: 1.95;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  outline: none;
+  cursor: text;
+}
+
+.manuscript .unread { color: var(--faint); }
+
+/* The character the reader cannot take. */
+.manuscript .stop {
+  background: var(--red-soft);
+  box-shadow: 0 0 0 1px var(--red);
+  color: var(--ink);
+}
+
+.mcaret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1.6em;
+  background: var(--red);
+  pointer-events: none;
+  transition: transform 70ms linear, height 70ms linear;
+}
+
+.mcaret::before,
+.mcaret::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  width: 5px;
+  height: 1px;
+  background: var(--red);
+}
+.mcaret::before { top: 0; }
+.mcaret::after { bottom: 0; }
+
+.m-note {
+  border-left: 1px solid var(--rule);
+  padding: 2px 0 0 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.m-line { margin: 0; }
+.m-line.sub { margin-top: 6px; font-size: 11.5px; line-height: 1.6; color: var(--faint); }
+.m-sep { color: var(--faint); margin: 0 6px; }
+
+.m-note [data-state].is-refused { color: var(--red); }
+.m-note .m-line.is-refused { color: var(--red); }
+.m-note .ghost { margin-top: 16px; }
+
+.m-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 22px 0 0;
+}
+
+/* ---------- sections: prose beside its specimen ---------- */
+
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 0 40px;
+  align-items: start;
+}
+
+.pair .prose p { max-width: 60ch; margin: 0 0 1.05em; }
+.pair .prose p:last-child { margin-bottom: 0; }
+
+.pair figure { margin: 0; min-width: 0; }
+
+.pair figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* ---------- the refusal, at reading size ---------- */
+
+.message-band {
+  padding: 44px 0 50px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.message {
+  margin: 0;
+  max-width: 30ch;
+  font-family: var(--mono);
+  font-size: clamp(18px, 2.5vw, 33px);
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  color: var(--red);
+  overflow-wrap: anywhere;
+}
+
+.message b { font-weight: 400; color: var(--ink); }
+
+.message-cap {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 20px 0 0;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* ---------- the one quiet sentence ---------- */
+
+.pull {
+  margin: 0;
+  padding: 64px 0 58px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.pull p {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(24px, 3.1vw, 40px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-indent: -0.4em;
+}
+
+/* ---------- where to go next ---------- */
+
+.closing { border-bottom: 0; }
+
+.onward {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 34px;
+}
+
+.onward a {
+  display: grid;
+  gap: 3px;
+  padding: 16px 18px 20px;
+  background: var(--paper);
+  transition: background 140ms ease;
+}
+
+.onward a:hover { background: var(--wash); }
+.onward .n { font-size: 10px; letter-spacing: 0.24em; color: var(--faint); }
+.onward .t { font-family: var(--serif); font-size: 23px; line-height: 1.1; }
+.onward .d { font-size: 12px; line-height: 1.55; color: var(--faint); max-width: 34ch; }
+
+@media (width <= 1000px) {
+  .m-body { grid-template-columns: minmax(0, 1fr) 180px; gap: 0 28px; }
+  .pair { grid-template-columns: minmax(0, 1fr); gap: 26px 0; }
+  .hero-body { grid-template-columns: minmax(0, 1fr); gap: 22px 0; }
+}
+
+@media (width <= 760px) {
+  .m-body { grid-template-columns: minmax(0, 1fr); gap: 22px 0; }
+  .m-note { border-left: 0; border-top: 1px solid var(--rule); padding: 14px 0 0; }
+  .onward { grid-template-columns: minmax(0, 1fr); }
+  .hero .display { font-size: clamp(52px, 15vw, 96px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcaret { transition: none; }
 }

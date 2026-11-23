@@ -3,11 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>moonpsec — a reader for MoonBit</title>
-<meta name="description" content="Parser combinators for MoonBit. A parser is a value: it reads text, keeps its place, and when it stops it says where and what it would have taken instead.">
-<meta name="theme-color" content="#080908">
+<title>moonpsec — parser combinators for MoonBit</title>
+<meta name="description" content="A parser is a value. Small parsers compose into a grammar, and a refusal names the line, the column and every character that would have been accepted instead.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/home.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
 <script>
   document.documentElement.dataset.theme =
     sessionStorage.getItem("moonpsec-theme") ||
@@ -16,212 +18,245 @@
 </head>
 <body>
 
-<main>
+<div class="rail" aria-hidden="true">
+  <svg class="mark" viewBox="0 0 24 24">
+    <line x1="4" y1="12" x2="20" y2="12"></line>
+    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <circle cx="12" cy="12" r="7.5"></circle>
+  </svg>
+  <div class="spine">plate 01 — moonpsec</div>
+  <div class="tick"></div>
+</div>
+<div class="reg tl" aria-hidden="true"></div>
+<div class="reg tr" aria-hidden="true"></div>
+<div class="reg bl" aria-hidden="true"></div>
 
-<section class="stage" data-stage>
-  <header class="top">
-    <span class="who">moonbitstack / moonpsec</span>
-    <nav aria-label="Pages">
-      <a href="guide.html">guide</a>
-      <a href="api.html">reference</a>
-      <a href="demo.html">play</a>
-      <a href="https://github.com/moonbitstack/moonpsec">source</a>
+<main class="sheet">
+
+  <header class="masthead">
+    <div class="name">moonpsec<span>parser combinators</span></div>
+    <nav class="pages" aria-label="Pages">
+      <a href="index.html" aria-current="page"><span class="n">01</span>plate</a>
+      <a href="guide.html"><span class="n">02</span>guide</a>
+      <a href="api.html"><span class="n">03</span>reference</a>
+      <a href="demo.html"><span class="n">04</span>play</a>
     </nav>
     <div class="tools">
-      <button class="theme" type="button" data-theme-toggle aria-label="Switch between day and night">night</button>
+      <button class="ghost" data-theme-toggle aria-label="Switch theme">light</button>
+      <a class="ghost" href="https://github.com/moonbitstack/moonpsec">github</a>
     </div>
   </header>
 
-  <div class="stage-copy">
-    <p class="kicker">parser combinators · moonbit</p>
-    <h1 class="word">moon<span class="caret" aria-hidden="true"></span>psec</h1>
-    <p class="thesis">A parser is a value. Give it text, and it answers with a value — or with the place it stopped, and every character it would have taken there.</p>
-    <p class="stamp">0.1.0 · apache-2.0 · no dependencies</p>
-  </div>
+  <section class="hero">
+    <div class="hero-meta">
+      <span class="label">a grammar kit for MoonBit</span>
+      <span class="label">one package · no dependencies</span>
+    </div>
+    <h1 class="display">moon<span class="caret-glyph" aria-hidden="true"></span>psec</h1>
+    <div class="hero-body">
+      <p class="lede">
+        A parser is a value. Give it text, and it answers with a value — or with
+        the place it stopped, and every character it would have taken there.
+      </p>
+      <div class="install">
+        <span class="label">install</span>
+        <pre data-lang="sh"><code>moon add moonbitstack/moonpsec</code></pre>
+      </div>
+    </div>
+  </section>
 
-  <aside class="report" aria-hidden="true">
-    <p class="head"><span>live report</span><span>json</span></p>
-    <dl>
-      <div><dt>at</dt><dd data-pos>1:1</dd></div>
-      <div><dt>state</dt><dd data-state class="hot">waiting</dd></div>
-      <div><dt>found</dt><dd data-got>—</dd></div>
-      <div><dt>expecting</dt><dd data-want>—</dd></div>
-    </dl>
-    <button class="hold" type="button" data-hold>hold</button>
-  </aside>
+  <section class="manuscript-block" aria-labelledby="document-label">
+    <div class="m-head">
+      <span class="label" id="document-label">the document</span>
+      <span class="label">read by examples/01-json</span>
+    </div>
 
-  <div class="tape" data-tape tabindex="0" role="group" aria-label="A JSON document being read character by character; the reading stops at the trailing comma.">
-    <div class="strip" data-strip><span data-read></span><span data-head></span><span class="unread" data-unread>{"name": "moonpsec", "version": "0.1.0", "tags": ["parser", "combinator", "moonbit"], "license": "Apache-2.0",}</span></div>
-  </div>
+    <div class="m-body">
+      <div class="m-text">
+        <p class="manuscript" data-manuscript tabindex="0" aria-describedby="document-label"><span data-read></span><span data-head></span><span class="unread" data-unread>{"name": "moonpsec", "version": "0.1.0", "tags": ["parser", "combinator", "moonbit"], "license": "Apache-2.0",}</span></p>
+        <i class="mcaret" data-caret aria-hidden="true"></i>
+      </div>
 
-  <div class="stage-foot">
-    <span class="hint">one document, read character by character</span>
-    <span class="hint">click the line to place the head</span>
-  </div>
+      <aside class="m-note" aria-hidden="true">
+        <p class="m-line"><span data-pos>1:1</span><span class="m-sep">·</span><span data-state>reading</span></p>
+        <p class="m-line sub" data-detail>the text has not been read yet</p>
+        <button class="ghost" type="button" data-hold>hold</button>
+      </aside>
+    </div>
 
-  <p class="sr-only" data-sr>The line is read left to right. Every character is accepted until the trailing comma, where the reader refuses: unexpected '}', expecting a JSON value.</p>
-</section>
+    <p class="m-foot">
+      <span class="small">click the document to place the caret</span>
+      <span class="small">the reader on this page is this library, compiled for the browser</span>
+    </p>
 
-<section class="chapter" id="place">
-  <div class="chapter-num">01</div>
-  <div class="chapter-main">
-    <h2>I keep my place.</h2>
-    <p>A position is three numbers: an offset into the text, a line, and a column. Every step carries them forward. A tab moves to the next stop — with the default width of eight, a tab at the start of a line puts the next character in column 9 — and a character above the basic plane counts once, the way a reader counts it, not the way a machine stores it.</p>
-    <p>The position is not a side effect of reading; it is an answer. <code>position</code> is a parser like any other, so a grammar can return where it got to.</p>
-  </div>
-  <div class="chapter-side">
-    <figure>
-      <pre class="code" data-lang="mbt"><code>let walked = @moonpsec.take(1).then(@moonpsec.position)
+    <p class="sr-only" data-sr>The document is read from the left. Every character up to the trailing comma is accepted; at the closing brace the reader refuses, because a comma cannot be followed by the end of an object.</p>
+  </section>
+
+  <section class="band" id="position">
+    <div class="side"><b>01</b>position</div>
+    <div class="body">
+      <h2 class="band-title">A position is three numbers.</h2>
+      <div class="pair">
+        <div class="prose">
+          <p>
+            An offset into the text, a line, and a column. Every step carries
+            them forward. A tab moves to the next stop — with the default width
+            of eight, a tab at the start of a line puts the next character in
+            column 9 — and a character above the basic plane counts once, the
+            way a reader counts it, not the way a machine stores it.
+          </p>
+          <p>
+            The position is not a side effect of reading; it is an answer.
+            <code>position</code> is a parser like any other, so a grammar can
+            return where it got to.
+          </p>
+        </div>
+        <figure>
+          <pre class="specimen" data-lang="mbt"><code>let walked = @moonpsec.take(1).then(@moonpsec.position)
 let measured = @moonpsec.run_position(walked, "\ta").unwrap()
-<span class="c">// measured.1 is the place after the tab: 1:9</span></code></pre>
-      <figcaption>A tab, then an <code>a</code>. Seven columns are the tab's, one is the letter's.</figcaption>
-    </figure>
-    <p class="result">1:9</p>
-  </div>
-</section>
+<span class="c">// measured.1 is the place after the tab</span></code></pre>
+          <figcaption><span class="label">after a tab</span> 1:9</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<section class="chapter" id="expecting">
-  <div class="chapter-num">02</div>
-  <div class="chapter-main">
-    <h2>I tell you what I wanted.</h2>
-    <p>When a choice fails, I do not report the last branch I tried. Every branch that failed at the same place contributes its expectation, and the message names them together: one position, one sentence, all the alternatives.</p>
-    <p>Naming a parser with <code>label</code> does not hide the alternatives — it replaces the character classes of one branch with the reader's word for it, which is what a person reading the message needs.</p>
-  </div>
-  <div class="chapter-side">
-    <figure>
-      <pre class="code" data-lang="mbt"><code>let either = @moonpsec.char('a').or(@moonpsec.char('b'))
-let refusal = @moonpsec.run(either, "c").unwrap_err()
-<span class="c">// 1:1: unexpected 'c'; expecting 'a' or 'b'</span></code></pre>
-      <figcaption>Both branches refused at the same offset, so both are named.</figcaption>
-    </figure>
-    <p class="result">1:1: unexpected 'c'; expecting 'a' or 'b'</p>
-  </div>
-</section>
+  <section class="band" id="expectations">
+    <div class="side"><b>02</b>expecting</div>
+    <div class="body">
+      <h2 class="band-title">One place, every alternative.</h2>
+      <div class="pair">
+        <div class="prose">
+          <p>
+            When a choice fails, the last branch tried is not the one that
+            speaks. Every branch that failed at the same place contributes its
+            expectation, and the message names them together: one position, one
+            sentence, all the alternatives.
+          </p>
+          <p>
+            <code>label</code> does not hide them. It replaces the character
+            classes of one branch with the reader's word for it, which is what a
+            person reading the message needs.
+          </p>
+        </div>
+        <figure>
+          <pre class="specimen" data-lang="mbt"><code>let either = @moonpsec.char('a').or(@moonpsec.char('b'))
+let refusal = @moonpsec.run(either, "c").unwrap_err()</code></pre>
+          <figcaption><span class="label">both branches</span> named at the same offset</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<section class="specimen" id="message">
-  <p class="specimen-line">1:1: unexpected <b>'c'</b>; expecting <b>'a' or 'b'</b></p>
-  <p class="specimen-cap">a refusal, in full — position, what was found, what would have done</p>
-</section>
+  <section class="message-band" aria-label="A refusal, in full">
+    <p class="message">1:1: unexpected <b>'c'</b>; expecting <b>'a' or 'b'</b></p>
+    <p class="message-cap"><span class="label">the refusal</span> position, what was found, what would have been taken</p>
+  </section>
 
-<section class="chapter" id="commit">
-  <div class="chapter-num">03</div>
-  <div class="chapter-main">
-    <h2>I commit when I have read.</h2>
-    <p>Reading is a commitment. Once I have consumed a character, a later <code>or</code> will not undo it: the text has been read, and the failure is about what comes next. That is what keeps a grammar from trying every alternative at every offset.</p>
-    <p><code>attempt</code> is how a grammar says the opposite — give the character back, and let the other branch have it.</p>
-  </div>
-  <div class="chapter-side">
-    <figure>
-      <pre class="code" data-lang="mbt"><code>let ab = @moonpsec.string("ab")
+  <section class="band" id="commitment">
+    <div class="side"><b>03</b>commit</div>
+    <div class="body">
+      <h2 class="band-title">A branch that has read something has committed.</h2>
+      <div class="pair">
+        <div class="prose">
+          <p>
+            Once a parser has consumed a character, a later <code>or</code> will
+            not undo it: the text has been read, and the failure is about what
+            comes next. That is what keeps a grammar from trying every
+            alternative at every offset.
+          </p>
+          <p>
+            <code>attempt</code> is how a grammar says the opposite — give the
+            character back, and let the other branch have it.
+          </p>
+        </div>
+        <figure>
+          <pre class="specimen" data-lang="mbt"><code>let ab = @moonpsec.string("ab")
 let ac = @moonpsec.string("ac")
 <span class="c">// the 'a' was read, so the second branch is never tried</span>
 let refused = @moonpsec.run(ab.or(ac), "ac")
 <span class="c">// the 'a' is given back before the second branch runs</span>
 let accepted = @moonpsec.run(ab.attempt().or(ac), "ac")</code></pre>
-      <figcaption>Two readings of the same two letters. The difference is one word.</figcaption>
-    </figure>
-    <p class="result">1:2: unexpected 'c'; expecting "ab"<br>Ok("ac")</p>
-  </div>
-</section>
+          <figcaption><span class="label">two readings</span> 1:2: expecting "ab" · Ok("ac")</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<blockquote class="pull">
-  <p>Every parser stops somewhere. The only question is what it can tell you when it does.</p>
-</blockquote>
+  <blockquote class="pull">
+    <p>Every parser stops somewhere. The only question is what it can tell you when it does.</p>
+  </blockquote>
 
-<section class="chapter" id="table">
-  <div class="chapter-num">04</div>
-  <div class="chapter-main">
-    <h2>I take the table you give me.</h2>
-    <p>Precedence does not have to be a tower of functions, one per level. It can be a list of lists — tightest binding first — from which the expression parser is built bottom up: postfix, prefix, right associative, left associative.</p>
-    <p>Associativity is in the constructor, not in the order of the list, so <code>^</code> folds to the right and <code>-</code> folds to the left without a second grammar.</p>
-  </div>
-  <div class="chapter-side">
-    <figure>
-      <pre class="code" data-lang="mbt"><code>let number = @moonpsec.digit.many1().map(digits => {
-  let mut value = 0
-  for digit in digits {
-    value = value * 10 + (digit.to_int() - '0'.to_int())
-  }
-  value
-})
-let power = @moonpsec
-  .char('^')
-  .map(_ => (a : Int, b : Int) => {
-    let mut result = 1
-    for _ in 0..&lt;b {
-      result = result * a
-    }
-    result
-  })
-let plus = @moonpsec
-  .char('+')
-  .map(_ => (a : Int, b : Int) => a + b)
-let table : Array[Array[@moonpsec.Operator[Int]]] = [
-  [@moonpsec.Operator::InfixR(power)],
-  [@moonpsec.Operator::InfixL(plus)],
-]
-let expression = @moonpsec.make_expr_parser(number, table)</code></pre>
-      <figcaption>Two levels, one table. The calculator in <code>src/examples/02-calc</code> has five.</figcaption>
-    </figure>
-    <p class="result">2^3^2 = 512</p>
-  </div>
-</section>
-
-<section class="chapter" id="pieces">
-  <div class="chapter-num">05</div>
-  <div class="chapter-main">
-    <h2>I wait for the rest.</h2>
-    <p>Text rarely arrives in one piece. A feeder takes it in chunks and answers <code>Needs</code> while the end of what it has is still in the middle of something. Feed the rest and the same grammar finishes the job — no second parser, and nothing that was settled is read twice.</p>
-    <p>The stage at the top of this page is that loop: one document, held short at every character, and the two answers a reader can give about a prefix.</p>
-  </div>
-  <div class="chapter-side">
-    <figure>
-      <pre class="code" data-lang="mbt"><code>let hello = @moonpsec.string("hello").eof()
+  <section class="band" id="pieces">
+    <div class="side"><b>04</b>pieces</div>
+    <div class="body">
+      <h2 class="band-title">The text does not have to arrive all at once.</h2>
+      <div class="pair">
+        <div class="prose">
+          <p>
+            A feeder takes the text in chunks and answers <code>Needs</code>
+            while the end of what it has is still in the middle of something.
+            Feed the rest and the same grammar finishes the job — no second
+            parser, and nothing that was settled is read twice.
+          </p>
+          <p>
+            The document at the top of this page is read that way: held short at
+            every character, and asked what it would say if the text ended
+            there.
+          </p>
+        </div>
+        <figure>
+          <pre class="specimen" data-lang="mbt"><code>let hello = @moonpsec.string("hello").eof()
 let feeder = @moonpsec.feeder(hello)
 let first = feeder.feed("he")
 <span class="c">// Needs(1): the word is not finished</span>
 let rest = feeder.feed("llo")
 let done = feeder.finish()</code></pre>
-      <figcaption>Two chunks, one grammar, and the value it was always going to produce.</figcaption>
-    </figure>
-    <p class="result">Needs(1) → Needs(1) → Ok("hello")</p>
-  </div>
-</section>
+          <figcaption><span class="label">two chunks</span> Needs(1) → Ok("hello")</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<section class="close" id="start">
-  <h2>Read something.</h2>
-  <p class="install-line"><span class="prompt">$</span>moon add moonbitstack/moonpsec</p>
-  <nav class="next" aria-label="Where to go next">
-    <a href="guide.html">
-      <span class="n">01 — guide</span>
-      <span class="t">From a character to a document</span>
-      <span class="d">Nine steps, each with the output it really produces.</span>
-    </a>
-    <a href="api.html">
-      <span class="n">02 — reference</span>
-      <span class="t">Every name, and what it promises</span>
-      <span class="d">Generated from the interface file and the doc comments.</span>
-    </a>
-    <a href="demo.html">
-      <span class="n">03 — play</span>
-      <span class="t">Cut a document, draw a tree</span>
-      <span class="d">Two benches that run the library compiled for the browser.</span>
-    </a>
-  </nav>
-</section>
+  <section class="band closing" id="start">
+    <div class="side"><b>05</b>start</div>
+    <div class="body">
+      <h2 class="band-title">Read something.</h2>
+      <div class="pair">
+        <div class="prose">
+          <p>
+            One package, no dependencies, four backends. The guide takes a
+            grammar from a single character to a whole document; the reference
+            is generated from the interface file; the play page runs the library
+            on a document of your own.
+          </p>
+        </div>
+        <figure>
+          <pre class="specimen" data-lang="sh"><code>moon add moonbitstack/moonpsec</code></pre>
+        </figure>
+      </div>
 
-<footer class="foot">
-  <span>moonpsec · apache-2.0 · moonbitstack</span>
-  <span>
-    <a href="https://github.com/moonbitstack/moonpsec">source</a> ·
-    <a href="https://mooncakes.io/docs/moonbitstack/moonpsec">mooncakes</a> ·
-    <a href="https://github.com/moonbitstack/moonpsec/blob/master/LICENSE">license</a>
-  </span>
-</footer>
+      <nav class="onward" aria-label="Where to go next">
+        <a href="guide.html"><span class="n">02</span><span class="t">guide</span><span class="d">From a character to a document, in nine steps.</span></a>
+        <a href="api.html"><span class="n">03</span><span class="t">reference</span><span class="d">Every public name, and what it promises.</span></a>
+        <a href="demo.html"><span class="n">04</span><span class="t">play</span><span class="d">Cut a document, draw an operator table's tree.</span></a>
+      </nav>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span>moonpsec · Apache-2.0 · a library of moonbitstack</span>
+    <span>
+      <a href="https://github.com/moonbitstack/moonpsec">source</a> ·
+      <a href="https://mooncakes.io/docs/moonbitstack/moonpsec">mooncakes</a> ·
+      <a href="https://github.com/moonbitstack/moonpsec/blob/master/LICENSE">license</a>
+    </span>
+  </footer>
 
 </main>
 
 <script src="assets/rule.js"></script>
-<script src="assets/home.js" type="module"></script>
+<script src="assets/theme.js"></script>
+<script type="module" src="assets/manuscript.js"></script>
 </body>
 </html>
